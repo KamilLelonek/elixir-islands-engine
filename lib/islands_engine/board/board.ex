@@ -8,11 +8,11 @@ defmodule IslandsEngine.Board do
 
   def new do
     coordinates = Enum.reduce(keys(), %{}, &put_coordinate/2)
-    
+
     %__MODULE__{coordinates: coordinates}
   end
 
-  defp keys do
+  def keys do
     for letter <- @letters,
         number <- @numbers,
       do: String.to_atom("#{letter}#{number}")
