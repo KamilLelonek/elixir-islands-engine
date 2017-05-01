@@ -9,11 +9,11 @@ defmodule IslandsEngine.Island.Agent do
 
   def replace_coordinates(agent, coordinates)
   when is_list(coordinates),
-    do: Agent.update(agent, fn _state -> %Island{coordinates: coordinates} end)
+    do: Agent.update(agent, &Map.put(&1, :coordinates, coordinates))
 
   def forested?(agent) do
     agent
-    |> Agent.get(&(&1.coordinates))
+    |> coordinates()
     |> Enum.all?(&Coordinate.Agent.hit?/1)
   end
 
@@ -22,7 +22,7 @@ defmodule IslandsEngine.Island.Agent do
 
   def coordinate_strings(agent) do
     agent
-    |> Agent.get(&(&1.coordinates))
+    |> coordinates()
     |> Enum.map(&Coordinate.Agent.to_string/1)
     |> Enum.join(", ")
   end
