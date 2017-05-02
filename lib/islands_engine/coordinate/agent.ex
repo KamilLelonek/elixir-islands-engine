@@ -24,6 +24,10 @@ defmodule IslandsEngine.Coordinate.Agent do
   when is_atom(island),
     do: Agent.update(agent, &Map.put(&1, :in_island, island))
 
+  def set_all_in_island(agents, island)
+  when is_list(agents) and is_atom(island),
+    do: Enum.each(agents, &set_in_island(&1, island))
+
   def hit?(agent),
     do: in_island?(agent) && guessed?(agent)
 

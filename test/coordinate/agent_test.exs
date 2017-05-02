@@ -17,7 +17,7 @@ defmodule IslandsEngine.Coordinate.AgentTest do
     assert Agent.guessed?(agent)
   end
 
-  test "should allow Coordinate to set in island", %{agent: agent} do
+  test "should allow Coordinate to set in Island", %{agent: agent} do
     refute Agent.in_island?(agent)
     assert :none = Agent.island(agent)
 
@@ -25,6 +25,17 @@ defmodule IslandsEngine.Coordinate.AgentTest do
 
     assert :teneryfa = Agent.island(agent)
     assert Agent.in_island?(agent)
+  end
+
+  test "should bulk set Coordinates in Island", %{agent: agent1} do
+    {:ok, agent2} = Agent.start_link()
+
+    Agent.set_all_in_island([agent1, agent2], :teneryfa)
+
+    assert :teneryfa = Agent.island(agent1)
+    assert :teneryfa = Agent.island(agent2)
+    assert Agent.in_island?(agent1)
+    assert Agent.in_island?(agent2)
   end
 
   test "should check if Coordinate is hit", %{agent: agent} do
