@@ -8,6 +8,17 @@ defmodule IslandsEngine.Board.Agent do
   when is_atom(key),
     do: Agent.get(agent, &(&1.coordinates[key]))
 
+  def get_coordinates(agent, coordinates),
+    do: Enum.map(coordinates, &extract_coordinate(agent, &1))
+
+  defp extract_coordinate(agent, coordinate)
+  when is_atom(coordinate),
+    do: get_coordinate(agent, coordinate)
+
+  defp extract_coordinate(agent, coordinate)
+  when is_pid(coordinate),
+    do: coordinate
+
   def guess_coordinate(agent, key) do
     agent
     |> get_coordinate(key)

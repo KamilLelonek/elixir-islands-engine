@@ -33,4 +33,11 @@ defmodule IslandsEngine.Board.AgentTest do
 
     assert Agent.coordinate_hit?(agent, :a1)
   end
+
+  test "should get multiple Coordinates", %{agent: agent} do
+    a1 = Agent.get_coordinate(agent, :a1)
+
+    assert [^a1, j10] = Agent.get_coordinates(agent, [a1, :j10])
+    assert ^j10       = Agent.get_coordinate(agent, :j10)
+  end
 end
