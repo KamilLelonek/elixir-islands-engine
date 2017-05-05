@@ -10,6 +10,26 @@ defmodule IslandsEngine.Player.Agent do
   def get_name(agent),
     do: Agent.get(agent, &(&1.name))
 
+  def get_board(agent),
+    do: Agent.get(agent, &(&1.board))
+
+  def get_island_set(agent),
+    do: Agent.get(agent, &(&1.island_set))
+
+  def set_island_coordinates(agent, island_key, coordinates)
+  when is_list(coordinates) do
+    island_set  = get_island_set(agent)
+    coordinates = get_board_coordinates(agent, coordinates)
+
+    IslandSet.Agent.set_island_coordinates(island_set, island_key, coordinates)
+  end
+
+  defp get_board_coordinates(agent, coordinates) do
+    agent
+    |> get_board()
+    |> Board.Agent.get_coordinates(coordinates)
+  end
+
   def to_string(agent),
     do: "%Player{\n" <> string_body(agent) <> "}"
 
