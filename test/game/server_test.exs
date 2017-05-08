@@ -1,7 +1,7 @@
 defmodule IslandsEngine.Game.ServerTest do
   use ExUnit.Case, async: true
 
-  alias IslandsEngine.{Game.Server, Player, IslandSet, Island, Board}
+  alias IslandsEngine.{Game.Server, Player, IslandSet, Island, Board, Coordinate}
 
   setup do
     {:ok, pid} = Server.start_link(:name)
@@ -39,5 +39,16 @@ defmodule IslandsEngine.Game.ServerTest do
     player1
     |> Player.Agent.get_board()
     |> Board.Agent.get_coordinate(:a1)
+  end
+
+  test "should guess a Coordinate", %{server: server} do
+    Server.guess_coordinate(server, :player2, :a1)
+
+    assert server
+    |> Server.state()
+    |> Map.fetch!(:player1)
+    |> Player.Agent.get_board()
+    |> Board.Agent.get_coordinate(:a1)
+    |> Coordinate.Agent.guessed?()
   end
 end

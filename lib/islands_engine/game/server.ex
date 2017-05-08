@@ -24,6 +24,10 @@ defmodule IslandsEngine.Game.Server do
   when is_atom(island) and is_atom(player),
     do: GenServer.call(server, {:set_island_coordinates, player, island, coordinates})
 
+  def guess_coordinate(server, player, coordinate)
+  when is_atom(player) and is_atom(coordinate),
+    do: GenServer.call(server, {:guess, player, coordinate})
+
   def handle_call(:state, _caller, game),
     do: {:reply, game, game}
 
@@ -40,4 +44,18 @@ defmodule IslandsEngine.Game.Server do
 
     {:reply, :ok, game}
   end
+
+  def handle_call({:guess, player, coordinate}, _caller, game) do
+    response =
+      game
+      |> opponent(player)
+      |> Player.Agent.guess_coordinate(coordinate)
+
+    {:reply, response, game}
+  end
+
+  defp opponent(game, :player1),
+    do: game.player2
+  defp opponent(game, :player2),
+    do: game.player1
 end

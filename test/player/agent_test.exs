@@ -1,7 +1,7 @@
 defmodule IslandsEngine.Player.AgentTest do
   use ExUnit.Case, async: true
 
-  alias IslandsEngine.{Player, Board, IslandSet, Island}
+  alias IslandsEngine.{Player, Board, IslandSet, Island, Coordinate}
 
   setup do
     {:ok, pid} = Player.Agent.start_link()
@@ -28,5 +28,14 @@ defmodule IslandsEngine.Player.AgentTest do
     board = Player.Agent.get_board(agent)
 
     assert ^coordinates = Board.Agent.get_coordinate(board, :c3)
+  end
+
+  test "should guess a Coordinate", %{agent: agent} do
+    Player.Agent.guess_coordinate(agent, :a1)
+
+    assert agent
+    |> Player.Agent.get_board()
+    |> Board.Agent.get_coordinate(:a1)
+    |> Coordinate.Agent.guessed?()
   end
 end
