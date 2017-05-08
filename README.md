@@ -131,4 +131,14 @@ We’ve built up a tree structure with a `Player` at the root. One path goes thr
 	<img width="300" src="https://monosnap.com/file/erbbG77AsbAssGL4dm35UnCE10c9ik.png">
 </p>
 
-The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## Guessing a Coordinate<p align="center">	<img width="300" src="https://monosnap.com/file/3MO8nQFlDNwCyKG5oAiJRS5gLBYGxg.png"></p>Guessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.
+The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## Guessing a Coordinate<p align="center">	<img width="300" src="https://monosnap.com/file/3MO8nQFlDNwCyKG5oAiJRS5gLBYGxg.png"></p>Guessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.# TestingTo run the entire test suite execute:    mix test
+
+You should see something like this:
+
+	➜  islands_engine git:(master) ✗ mix test
+	....................
+
+	Finished in 0.2 seconds
+	20 tests, 0 failures
+
+The number may vary depending on the amount of tests currently written. Anyway, it means that all tests passed.
