@@ -8,9 +8,9 @@ This project is the `Elixir` representation of _The Game of Islands_.
 
 It’s a **game** for two **players**, and each player has a **board** which consists of a grid of one hundred **coordinates**. The grid is labeled with the letters `a` through `j` going down the left side of the board and the numbers `1` through `10` across the top. We name individual coordinates with a letter-number combination like `a1`, `j5`, `d10`, and so on.
 
-<div style="text-align:center">
-	<img src="https://monosnap.com/file/zOHmExv51fY7NxB0Tn5bqLaVLgycTC.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/zOHmExv51fY7NxB0Tn5bqLaVLgycTC.png">
+</p>
 
 The players cannot see each other’s boards.
 
@@ -51,9 +51,9 @@ In the `Game` we defined a couple of components. They are basically structs crea
 
 ## Coordinate
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/fIVQmIFoM3NLBBnOEK92pvHUdOQDnF.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/fIVQmIFoM3NLBBnOEK92pvHUdOQDnF.png">
+</p>
 
 `Coordinates` hold the majority of the state we need to play the `Game`. `Coordinates` are the core entities with which we’ll compose the others in Islands. `Coordinate` really only needs to keep track of two things:
 
@@ -66,9 +66,9 @@ Moreover, a `Coordinate` won’t need to keep track of which position it occupie
 
 ## Island
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/dR8I362i2G6oGU9uW79WwcgDz8kyod.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/dR8I362i2G6oGU9uW79WwcgDz8kyod.png">
+</p>
 
 An `Island` is made of a list of `Coordinates`.
 
@@ -76,18 +76,18 @@ At the beginning of the `Game`, `Players` will not have placed their `Islands` o
 
 When a `Player` does place an `Board` on the `Board`, the game will need to associate the `Coordinates` the `Island` occupies on the `Board` with the `Island`. If a `Player` moves an `Island`, the game will need to disassociate it from the `Coordinates` it used to have, and re-associate it with the new ones it lands on.
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/P7A0Zoj2Qr3fxp5HdHTHyPFglgDiUS.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/P7A0Zoj2Qr3fxp5HdHTHyPFglgDiUS.png">
+</p>
 
 
 Besides keeping track of its `Coordinates`, an `Island` needs to be able to tell us whether or not it is forested. An `Island` can decide whether it is forested by asking each of it’s `Coordinates` if it is hit (if they are located in `Island` and guessed). When they are all hit, the `Island` is forested, otherwise not.
 
 ## IslandSet
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/0V315siCaadhReY1VNuNm2pqtCq4Gu.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/0V315siCaadhReY1VNuNm2pqtCq4Gu.png">
+</p>
 
 An `IslandSet` will have one each of five different `Island` shapes: an *atoll*, a *dot*, an *l-shape*, an *s-shape*, and a *square*.
 
@@ -101,25 +101,25 @@ An `IslandSet` will have one each of five different `Island` shapes: an *atoll*,
 
 ## Board
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/sLIVGFDLC8dhyfxEizycTbS7gA4fyk.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/sLIVGFDLC8dhyfxEizycTbS7gA4fyk.png">
+</p>
 
 A `Board` is made of a map of `Islands` which acts as an organizer. A `Board` is a grid of a hundred named boxes. We hold the state of each named box in a `Coordinate`. We model the `Board` in such a way that we can reference each `Coordinate` by the letter-number name of the box they represent so that we can read and manipulate the state of any box.
 
 `Boards` have many `Coordinates` and a `Coordinate` belong to a `Board`.
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/fPHCLhUdc3eXWICLs3lV85BMYCU0Zb.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/fPHCLhUdc3eXWICLs3lV85BMYCU0Zb.png">
+</p>
 
 We don’t need to make each `Coordinate` store its name when only the `Board` needs it. We can keep `Coordinates` slim and only add the name in the context that it’s needed, the `Board`. The `Board` will provide a way for the rest of the `Game` to interact with individual `Coordinates` by name. This makes a `Board` the de facto interface for individual `Coordinates`.
 
 ## Player
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/Yo0AEnctC1FwizEEkdQdtcLUeMIY0T.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/Yo0AEnctC1FwizEEkdQdtcLUeMIY0T.png">
+</p>
 
 The `Game` requires two `Players`, and that each `Player` will have a `Board` and a set of `Islands`. A `Player` should also have a `name` to display on screen.
 
@@ -127,8 +127,8 @@ The `Game` requires two `Players`, and that each `Player` will have a `Board` an
 
 We’ve built up a tree structure with a `Player` at the root. One path goes through a `Board` to a map of `Coordinates`. The other goes through an `IslandSet` through a struct of `Islands` to a list of `Coordinates`. Here’s a simplified diagram of that hierarchy:
 
-<div style="margin:0 auto;text-align:center;width:400px">
-	<img src ="https://monosnap.com/file/erbbG77AsbAssGL4dm35UnCE10c9ik.png"/>
-</div>
+<p align="center">
+	<img width="300" src="https://monosnap.com/file/erbbG77AsbAssGL4dm35UnCE10c9ik.png">
+</p>
 
-The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## Guessing a CoordinateGuessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.
+The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## Guessing a Coordinate<p align="center">	<img width="300" src="https://monosnap.com/file/3MO8nQFlDNwCyKG5oAiJRS5gLBYGxg.png"></p>Guessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.
