@@ -4,7 +4,7 @@
 
 This project is the `Elixir` representation of _The Game of Islands_.
 
-# Rules
+# Description
 
 It’s a **game** for two **players**, and each player has a **board** which consists of a grid of one hundred **coordinates**. The grid is labeled with the letters `a` through `j` going down the left side of the board and the numbers `1` through `10` across the top. We name individual coordinates with a letter-number combination like `a1`, `j5`, `d10`, and so on.
 
@@ -131,4 +131,4 @@ We’ve built up a tree structure with a `Player` at the root. One path goes thr
 	<img src ="https://monosnap.com/file/erbbG77AsbAssGL4dm35UnCE10c9ik.png"/>
 </div>
 
-The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.
+The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## Guessing a CoordinateGuessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.
