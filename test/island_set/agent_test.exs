@@ -17,17 +17,32 @@ defmodule IslandsEngine.IslandSet.AgentTest do
   end
 
   test "should set Island Coordinates", %{agent: agent} do
-    {:ok, coordinates} = Coordinate.Agent.start_link()
+    {:ok, coordinate} = Coordinate.Agent.start_link()
 
-    refute Coordinate.Agent.in_island?(coordinates)
+    refute Coordinate.Agent.in_island?(coordinate)
 
-    IslandSet.Agent.set_island_coordinates(agent, :dot, [coordinates])
+    IslandSet.Agent.set_island_coordinates(agent, :dot, [coordinate])
 
-    assert Coordinate.Agent.in_island?(coordinates)
-    assert :dot = Coordinate.Agent.island(coordinates)
+    assert Coordinate.Agent.in_island?(coordinate)
+    assert :dot = Coordinate.Agent.island(coordinate)
 
     island = IslandSet.Agent.get_island(agent, :dot)
 
-    assert [^coordinates] = Island.Agent.coordinates(island)
+    assert [^coordinate] = Island.Agent.coordinates(island)
+  end
+
+  test "should check a fortested Island", %{agent: agent} do
+    refute IslandSet.Agent.forested?(agent, :none)
+
+    {:ok, coordinate} = Coordinate.Agent.start_link()
+    IslandSet.Agent.set_island_coordinates(agent, :dot, [coordinate])
+
+    refute IslandSet.Agent.forested?(agent, :dot)
+    refute IslandSet.Agent.all_forested?(agent)
+
+    Coordinate.Agent.guess(coordinate)
+
+    assert IslandSet.Agent.forested?(agent, :dot)
+    assert IslandSet.Agent.all_forested?(agent)
   end
 end

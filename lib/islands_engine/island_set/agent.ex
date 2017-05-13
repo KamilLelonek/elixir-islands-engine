@@ -7,6 +7,9 @@ defmodule IslandsEngine.IslandSet.Agent do
   def get_island(agent, key),
     do: Agent.get(agent, &Map.fetch!(&1, key))
 
+  defp island_set(agent),
+    do: Agent.get(agent, &(&1))
+
   def set_island_coordinates(agent, island_key, coordinates)
   when is_list(coordinates) do
     island              = get_island(agent, island_key)
@@ -16,6 +19,18 @@ defmodule IslandsEngine.IslandSet.Agent do
     Coordinate.Agent.set_all_in_island(current_coordinates, :none)
     Coordinate.Agent.set_all_in_island(coordinates, island_key)
   end
+
+  def forested?(_agent, :none),
+    do: false
+
+  def forested?(agent, island_key) do
+    agent
+    |> get_island(island_key)
+    |> Island.Agent.forested?()
+  end
+
+  def all_forested?(agent),
+    do: Enum.all?(IslandSet.keys(), &forested?(agent, &1))
 
   def to_string(agent),
     do: "%IslandSet{\n" <> string_body(agent) <> "}"
