@@ -38,4 +38,17 @@ defmodule IslandsEngine.Player.AgentTest do
     |> Board.Agent.get_coordinate(:a1)
     |> Coordinate.Agent.guessed?()
   end
+
+  test "should check forested Island", %{agent: agent} do
+    coordinate_key = :c3
+    island_key     = :dot
+
+    Player.Agent.set_island_coordinates(agent, island_key, [coordinate_key])
+
+    assert :none = Player.Agent.forested_island(agent, coordinate_key)
+
+    Player.Agent.guess_coordinate(agent, coordinate_key)
+
+    assert ^island_key = Player.Agent.forested_island(agent, coordinate_key)
+  end
 end

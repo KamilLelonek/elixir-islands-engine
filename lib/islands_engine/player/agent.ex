@@ -30,6 +30,23 @@ defmodule IslandsEngine.Player.Agent do
     |> Board.Agent.guess_coordinate(coordinate)
   end
 
+  def forested_island(opponent, coordinate) do
+    island_key =
+      opponent
+      |> get_board()
+      |> Board.Agent.coordinate_island(coordinate)
+
+    opponent
+    |> get_island_set()
+    |> IslandSet.Agent.forested?(island_key)
+    |> forested_island_key(island_key)
+  end
+
+  defp forested_island_key(true, island_key),
+    do: island_key
+  defp forested_island_key(false, _island_key),
+    do: :none
+
   defp get_board_coordinates(agent, coordinates) do
     agent
     |> get_board()
