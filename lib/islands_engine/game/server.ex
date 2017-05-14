@@ -3,8 +3,9 @@ defmodule IslandsEngine.Game.Server do
 
   alias IslandsEngine.{Game, Player}
 
-  def start_link(name),
-    do: GenServer.start_link(__MODULE__, name)
+  def start_link(name)
+  when is_binary(name) and byte_size(name) > 0,
+    do: GenServer.start_link(__MODULE__, name, name: {:global, "game:#{name}"})
 
   def init(name) do
     {:ok, player1} = Player.Agent.start_link(name)
@@ -12,6 +13,9 @@ defmodule IslandsEngine.Game.Server do
 
     {:ok, %Game{player1: player1, player2: player2}}
   end
+
+  def stop(pid),
+    do: GenServer.cast(pid, :stop)
 
   def state(server),
     do: GenServer.call(server, :state)
@@ -73,4 +77,7 @@ defmodule IslandsEngine.Game.Server do
     do: game.player2
   defp opponent(game, :player2),
     do: game.player1
+
+  def handle_cast(:stop, game),
+    do: {:stop, :normal, game}
 end

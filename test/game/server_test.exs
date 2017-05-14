@@ -3,8 +3,10 @@ defmodule IslandsEngine.Game.ServerTest do
 
   alias IslandsEngine.{Game.Server, Player, IslandSet, Island, Board, Coordinate}
 
+  @name "Frank"
+
   setup do
-    {:ok, pid} = Server.start_link(:name)
+    {:ok, pid} = Server.start_link(@name)
 
     {:ok, server: pid}
   end
@@ -12,7 +14,7 @@ defmodule IslandsEngine.Game.ServerTest do
   test "should initalize a Game", %{server: server} do
     %{player1: player1, player2: player2} = Server.state(server)
 
-    assert :name = Player.Agent.get_name(player1)
+    assert @name == Player.Agent.get_name(player1)
     assert :none = Player.Agent.get_name(player2)
   end
 
@@ -21,7 +23,7 @@ defmodule IslandsEngine.Game.ServerTest do
 
     %{player1: player1, player2: player2} = Server.state(server)
 
-    assert :name  = Player.Agent.get_name(player1)
+    assert @name == Player.Agent.get_name(player1)
     assert :kamil = Player.Agent.get_name(player2)
   end
 
@@ -53,8 +55,14 @@ defmodule IslandsEngine.Game.ServerTest do
   end
 
   test "should hit an Island", %{server: server} do
-      Server.set_island_coordinates(server, :player2, :dot, [:a1])
+    Server.set_island_coordinates(server, :player2, :dot, [:a1])
 
-      assert {:hit, :dot, true} = Server.guess_coordinate(server, :player1, :a1)
-    end
+    assert {:hit, :dot, true} = Server.guess_coordinate(server, :player1, :a1)
+  end
+
+  test "should start and stop a Game", %{server: server} do
+    assert {:error, {:already_started, ^server}} = Server.start_link(@name)
+    assert %{}                                   = Server.state({:global, "game:#{@name}"})
+    assert :ok                                   = Server.stop({:global, "game:#{@name}"})
+  end
 end
