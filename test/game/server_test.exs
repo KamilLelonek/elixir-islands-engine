@@ -42,7 +42,7 @@ defmodule IslandsEngine.Game.ServerTest do
   end
 
   test "should guess a Coordinate", %{server: server} do
-    Server.guess_coordinate(server, :player2, :a1)
+    assert {:miss, :none, :no_win} = Server.guess_coordinate(server, :player2, :a1)
 
     assert server
     |> Server.state()
@@ -51,4 +51,10 @@ defmodule IslandsEngine.Game.ServerTest do
     |> Board.Agent.get_coordinate(:a1)
     |> Coordinate.Agent.guessed?()
   end
+
+  test "should hit an Island", %{server: server} do
+      Server.set_island_coordinates(server, :player2, :dot, [:a1])
+
+      assert {:hit, :dot, true} = Server.guess_coordinate(server, :player1, :a1)
+    end
 end

@@ -46,13 +46,28 @@ defmodule IslandsEngine.Game.Server do
   end
 
   def handle_call({:guess, player, coordinate}, _caller, game) do
-    response =
-      game
-      |> opponent(player)
-      |> Player.Agent.guess_coordinate(coordinate)
+    opponent = opponent(game, player)
 
-    {:reply, response, game}
+    opponent
+    |> Player.Agent.guess_coordinate(coordinate)
+    |> forest_check(opponent, coordinate)
+    |> win_check(opponent, game)
   end
+
+  defp forest_check(:miss, _opponent, _coordinate),
+    do: {:miss, :none}
+
+  defp forest_check(:hit, opponent, coordinate),
+    do: {:hit, Player.Agent.forested_island(opponent, coordinate)}
+
+  defp win_check({hit_or_miss, :none}, _opponent, game),
+    do: {:reply, {hit_or_miss, :none, :no_win}, game}
+
+  defp win_check({:hit, island_key}, opponent, game),
+    do: win_status(island_key, Player.Agent.win?(opponent), game)
+
+  defp win_status(island_key, win_status, game),
+    do: {:reply, {:hit, island_key, win_status}, game}
 
   defp opponent(game, :player1),
     do: game.player2
