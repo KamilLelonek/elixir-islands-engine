@@ -25,10 +25,17 @@ defmodule IslandsEngine.Player.Agent do
   end
 
   def guess_coordinate(agent, coordinate) do
-    agent
-    |> get_board()
-    |> Board.Agent.guess_coordinate(coordinate)
+    board = get_board(agent)
+
+    Board.Agent.guess_coordinate(board, coordinate)
+
+    board
+    |> Board.Agent.coordinate_hit?(coordinate)
+    |> coordinate_hit?()
   end
+
+  defp coordinate_hit?(true),  do: :hit
+  defp coordinate_hit?(false), do: :miss
 
   def forested_island(opponent, coordinate) do
     island_key =

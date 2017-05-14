@@ -31,7 +31,7 @@ defmodule IslandsEngine.Player.AgentTest do
   end
 
   test "should guess a Coordinate", %{agent: agent} do
-    Player.Agent.guess_coordinate(agent, :a1)
+    assert :miss = Player.Agent.guess_coordinate(agent, :a1)
 
     assert agent
     |> Player.Agent.get_board()
@@ -46,8 +46,7 @@ defmodule IslandsEngine.Player.AgentTest do
     Player.Agent.set_island_coordinates(agent, island_key, [coordinate_key])
 
     assert :none = Player.Agent.forested_island(agent, coordinate_key)
-
-    Player.Agent.guess_coordinate(agent, coordinate_key)
+    assert :hit  = Player.Agent.guess_coordinate(agent, coordinate_key)
 
     assert ^island_key = Player.Agent.forested_island(agent, coordinate_key)
   end
