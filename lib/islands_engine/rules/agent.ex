@@ -119,6 +119,9 @@ defmodule IslandsEngine.Rules.Agent do
   def game_over({:call, caller_pid}, :show_current_state, _state),
     do: {:keep_state_and_data, {:reply, caller_pid, :game_over}}
 
+  def game_over({:call, from}, _, _state_data),
+    do: {:keep_state_and_data, {:reply, from, :error}}
+
   # API FUNCTIONS
   def show_current_state(fsm),
     do: :gen_statem.call(fsm, :show_current_state)
