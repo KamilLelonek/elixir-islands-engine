@@ -28,4 +28,15 @@ defmodule IslandsEngine.Rules.AgentTest do
 
     assert :players_set = Agent.show_current_state(agent)
   end
+
+  test "should start player1 turn", %{agent: agent} do
+    Agent.add_player(agent)
+    Agent.move_island(agent, :player1)
+    Agent.move_island(agent, :player2)
+
+    assert :ok           = Agent.set_islands(agent, :player1)
+    assert :players_set  = Agent.show_current_state(agent)
+    assert :ok           = Agent.set_islands(agent, :player2)
+    assert :player1_turn = Agent.show_current_state(agent)
+  end
 end

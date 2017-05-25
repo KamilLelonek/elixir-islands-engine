@@ -73,10 +73,27 @@ defmodule IslandsEngine.Rules.Agent do
     |> do_players_set(caller_pid)
   end
 
+  def players_set({:call, caller_pid}, {:set_islands, player}, state) do
+    state
+    |> Map.put(player, :islands_set)
+    |> set_islands_reply(caller_pid)
+  end
+
+  def players_set({:call, caller_pid}, _, _state),
+    do: {:keep_state_and_data, {:reply, caller_pid, :error}}
+
   defp do_players_set(:islands_not_set, caller_pid),
     do: {:keep_state_and_data, {:reply, caller_pid, :ok}}
   defp do_players_set(:islands_set, caller_pid),
     do: {:keep_state_and_data, {:reply, caller_pid, :error}}
+
+  defp set_islands_reply(%{player1: :islands_set, player2: :islands_set} = state, caller_pid),
+    do: {:next_state, :player1_turn, state, {:reply, caller_pid, :ok}}
+  defp set_islands_reply(state, caller_pid),
+    do: {:keep_state, state, {:reply, caller_pid, :ok}}
+
+  def player1_turn({:call, caller_pid}, :show_current_state, _state_data),
+    do: {:keep_state_and_data, {:reply, caller_pid, :player1_turn}}
 
   # API FUNCTIONS
   def show_current_state(fsm),
@@ -88,4 +105,8 @@ defmodule IslandsEngine.Rules.Agent do
   def move_island(fsm, player)
   when is_atom(player),
     do: :gen_statem.call(fsm, {:move_island, player})
+
+  def set_islands(fsm, player)
+  when is_atom(player),
+    do: :gen_statem.call(fsm, {:set_islands, player})
 end
