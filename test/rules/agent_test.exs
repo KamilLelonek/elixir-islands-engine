@@ -49,4 +49,13 @@ defmodule IslandsEngine.Rules.AgentTest do
     assert :ok           = Agent.guess_coordinate(agent, :player1)
     assert :player2_turn = Agent.show_current_state(agent)
   end
+
+  test "should make the game over", %{agent: agent} do
+    Agent.add_player(agent)
+    Agent.set_islands(agent, :player1)
+    Agent.set_islands(agent, :player2)
+    Agent.win(agent)
+
+    assert :game_over = Agent.show_current_state(agent)
+  end
 end
