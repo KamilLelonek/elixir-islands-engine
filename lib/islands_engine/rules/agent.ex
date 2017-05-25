@@ -110,6 +110,9 @@ defmodule IslandsEngine.Rules.Agent do
   def player2_turn({:call, caller_pid}, {:guess_coordinate, :player2}, state),
     do: {:next_state, :player1_turn, state, {:reply, caller_pid, :ok}}
 
+  def player2_turn({:call, caller_pid}, :win, state),
+    do: {:next_state, :game_over, state, {:reply, caller_pid, :ok}}
+
   def player2_turn(_event, _caller_pid, state),
     do: {:reply, {:error, :action_out_of_sequence}, :player2_turn, state}
 

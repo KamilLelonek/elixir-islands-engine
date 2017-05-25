@@ -41,13 +41,30 @@ defmodule IslandsEngine.Rules.AgentTest do
   end
 
   test "should allow to guess a Coordinate only when it's a specific player turn", %{agent: agent} do
-    Agent.add_player(agent)
-    Agent.set_islands(agent, :player1)
-    Agent.set_islands(agent, :player2)
+    start_game(agent)
 
     assert :error        = Agent.guess_coordinate(agent, :player2)
     assert :ok           = Agent.guess_coordinate(agent, :player1)
     assert :player2_turn = Agent.show_current_state(agent)
     assert :ok           = Agent.guess_coordinate(agent, :player2)
+  end
+
+  describe "gam" do
+
+  end
+
+  test "should make the game over", %{agent: agent} do
+    start_game(agent)
+    
+    Agent.guess_coordinate(agent, :player1)
+    Agent.win(agent)
+
+    assert :game_over = Agent.show_current_state(agent)
+  end
+
+  defp start_game(agent) do
+    Agent.add_player(agent)
+    Agent.set_islands(agent, :player1)
+    Agent.set_islands(agent, :player2)
   end
 end
