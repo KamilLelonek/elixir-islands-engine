@@ -67,10 +67,25 @@ defmodule IslandsEngine.Rules.Agent do
   def players_set({:call, caller_pid}, :show_current_state, _state),
     do: {:keep_state_and_data, {:reply, caller_pid, :players_set}}
 
+  def players_set({:call, caller_pid}, {:move_island, player}, state) do
+    state
+    |> Map.get(player)
+    |> do_players_set(caller_pid)
+  end
+
+  defp do_players_set(:islands_not_set, caller_pid),
+    do: {:keep_state_and_data, {:reply, caller_pid, :ok}}
+  defp do_players_set(:islands_set, caller_pid),
+    do: {:keep_state_and_data, {:reply, caller_pid, :error}}
+
   # API FUNCTIONS
   def show_current_state(fsm),
     do: :gen_statem.call(fsm, :show_current_state)
 
   def add_player(fsm),
     do: :gen_statem.call(fsm, :add_player)
+
+  def move_island(fsm, player)
+  when is_atom(player),
+    do: :gen_statem.call(fsm, {:move_island, player})
 end

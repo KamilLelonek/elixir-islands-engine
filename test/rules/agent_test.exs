@@ -17,4 +17,15 @@ defmodule IslandsEngine.Rules.AgentTest do
     assert :ok          = Agent.add_player(agent)
     assert :players_set = Agent.show_current_state(agent)
   end
+
+  test "should move Islands", %{agent: agent} do
+    Agent.add_player(agent)
+
+    assert :ok = Agent.move_island(agent, :player1)
+    assert :ok = Agent.move_island(agent, :player1)
+    assert :ok = Agent.move_island(agent, :player2)
+    assert :ok = Agent.move_island(agent, :player2)
+
+    assert :players_set = Agent.show_current_state(agent)
+  end
 end
