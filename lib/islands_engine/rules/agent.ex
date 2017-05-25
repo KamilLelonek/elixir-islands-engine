@@ -92,8 +92,17 @@ defmodule IslandsEngine.Rules.Agent do
   defp set_islands_reply(state, caller_pid),
     do: {:keep_state, state, {:reply, caller_pid, :ok}}
 
-  def player1_turn({:call, caller_pid}, :show_current_state, _state_data),
+  def player1_turn({:call, caller_pid}, :show_current_state, _state),
     do: {:keep_state_and_data, {:reply, caller_pid, :player1_turn}}
+
+  def player1_turn({:call, caller_pid}, {:guess_coordinate, :player1}, state),
+    do: {:next_state, :player2_turn, state, {:reply, caller_pid, :ok}}
+
+  def player1_turn({:call, caller_pid}, _, _state),
+    do: {:keep_state_and_data, {:reply, caller_pid, :error}}
+
+  def player2_turn({:call, caller_pid}, :show_current_state, _state), 
+    do: {:keep_state_and_data, {:reply, caller_pid, :player2_turn}}
 
   # API FUNCTIONS
   def show_current_state(fsm),
@@ -109,4 +118,8 @@ defmodule IslandsEngine.Rules.Agent do
   def set_islands(fsm, player)
   when is_atom(player),
     do: :gen_statem.call(fsm, {:set_islands, player})
+
+  def guess_coordinate(fsm, player)
+  when is_atom(player),
+    do: :gen_statem.call(fsm, {:guess_coordinate, player})
 end

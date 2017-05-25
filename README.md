@@ -67,7 +67,7 @@ Moreover, a `Coordinate` won’t need to keep track of which position it occupie
 ## Island
 
 <p align="center">
-	<img width="300" src="https://monosnap.com/file/dR8I362i2G6oGU9uW79WwcgDz8kyod.png">
+	<img width="200" src="https://monosnap.com/file/dR8I362i2G6oGU9uW79WwcgDz8kyod.png">
 </p>
 
 An `Island` is made of a list of `Coordinates`.
@@ -86,7 +86,7 @@ Besides keeping track of its `Coordinates`, an `Island` needs to be able to tell
 ## IslandSet
 
 <p align="center">
-	<img width="300" src="https://monosnap.com/file/0V315siCaadhReY1VNuNm2pqtCq4Gu.png">
+	<img src="https://monosnap.com/file/0V315siCaadhReY1VNuNm2pqtCq4Gu.png">
 </p>
 
 An `IslandSet` will have one each of five different `Island` shapes: an *atoll*, a *dot*, an *l-shape*, an *s-shape*, and a *square*.
@@ -118,7 +118,7 @@ We don’t need to make each `Coordinate` store its name when only the `Board` n
 ## Player
 
 <p align="center">
-	<img width="300" src="https://monosnap.com/file/Yo0AEnctC1FwizEEkdQdtcLUeMIY0T.png">
+	<img width="200" src="https://monosnap.com/file/Yo0AEnctC1FwizEEkdQdtcLUeMIY0T.png">
 </p>
 
 The `Game` requires two `Players`, and that each `Player` will have a `Board` and a set of `Islands`. A `Player` should also have a `name` to display on screen.
@@ -128,10 +128,10 @@ The `Game` requires two `Players`, and that each `Player` will have a `Board` an
 We’ve built up a tree structure with a `Player` at the root. One path goes through a `Board` to a map of `Coordinates`. The other goes through an `IslandSet` through a struct of `Islands` to a list of `Coordinates`. Here’s a simplified diagram of that hierarchy:
 
 <p align="center">
-	<img width="300" src="https://monosnap.com/file/erbbG77AsbAssGL4dm35UnCE10c9ik.png">
+	<img width="350" src="https://monosnap.com/file/erbbG77AsbAssGL4dm35UnCE10c9ik.png">
 </p>
 
-The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## States and transitionHere's a representation of the all the states and the direction of the transitions between them.<p align="center">	<img src="https://monosnap.com/file/7xvReF5NO12JNWec9K5ThpP3YYvtUs.png"></p>In the case of Islands, a single player starts a game. This event puts the game in it’s first state, :initialized. When we’re in :initialized, the only permissible action is adding the second player.<p align="center">	<img src="https://monosnap.com/file/MQzpxtaYhUJZESmCloaugVx8gOxce9.png"></p>Players can move their islands at any time until they set them. Both players are almost certain to set their islands at different times. If `player1` has set their islands but `player2` hasn’t, `player1` should no longer be able to move their islands, but `player2` should still be able to.## Guessing a Coordinate<p align="center">	<img src="https://monosnap.com/file/3MO8nQFlDNwCyKG5oAiJRS5gLBYGxg.png"></p>Guessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.# TestingTo run the entire test suite execute:    mix test
+The interesting thing is that the leaves of both branches of this tree are always `Coordinates`. In other words, any `Coordinate` can simultaneously be part of the `Board` and part of an `Island`. The challenge with a structure like this is keeping `Coordinate` data in synch on both branches of the tree.If we had chosen to model this tree as a huge, single data structure, every time we updated `Coordinate` data on one branch, we would need to go update it on the other as well. That’s a recipe for bugs if ever there was one. Instead, we broke the huge structure into manageable pieces, and we stored those pieces that can communicate and coordinate.# Rules## States and transitionHere's a representation of the all the states and the direction of the transitions between them.<p align="center">	<img src="https://monosnap.com/file/7xvReF5NO12JNWec9K5ThpP3YYvtUs.png"></p>In the case of Islands, a single player starts a game. This event puts the game in it’s first state, :initialized. When we’re in :initialized, the only permissible action is adding the second player.<p align="center">	<img width="300" src="https://monosnap.com/file/MQzpxtaYhUJZESmCloaugVx8gOxce9.png"></p>Players can move their islands at any time until they set them. Both players are almost certain to set their islands at different times. If `player1` has set their islands but `player2` hasn’t, `player1` should no longer be able to move their islands, but `player2` should still be able to. In order to handle this properly, we need to keep track of whether each player has set their islands individually.## Guessing a Coordinate<p align="center">	<img src="https://monosnap.com/file/3MO8nQFlDNwCyKG5oAiJRS5gLBYGxg.png"></p>Guessing coordinates is the most important action in the game of Islands. It seems simple, but there’s a lot going on. We need to find a path from the player doing the guessing to a specific coordinate on their opponent’s board. We’ve got to mark that coordinate as guessed and return whether it’s a hit or a miss. A guess requires a player and a coordinate.<p align="center">	<img width="300" src="https://monosnap.com/file/4z6B0CoitApx3sMTToyfO53m53Gnjg.png"></p>The state will transition back and forth between one player’s turn and the other until one of them wins. Once both players have set their islands, the game is in `player1` turn. When it’s the first player's turn, that player may guess a coordinate, and that player may win the game. No other events are permissible.# TestingTo run the entire test suite execute:    mix test
 
 You should see something like this:
 
