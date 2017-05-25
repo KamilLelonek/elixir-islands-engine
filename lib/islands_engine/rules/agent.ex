@@ -52,7 +52,25 @@ defmodule IslandsEngine.Rules.Agent do
   def initialized({:call, caller_pid}, :show_current_state, state),
     do: {:next_state, :initialized, state, {:reply, caller_pid, :initialized}}
 
+  # Adding a player is the only event we allow in the :initialized state
+  # The return tuple sends :ok back to the caller, meaning the event is permissible.
+  # It also specifies :players_set as the next state.
+  def initialized({:call, caller_pid}, :add_player, state),
+    do: {:next_state, :players_set, state, {:reply, caller_pid, :ok}}
+
+  # The "catchall" clause to return an error for any events
+  # besides the ones we explicitly say are ok.
+  def initialized({:call, caller_pid}, _, _state),
+    do: {:keep_state_and_data, {:reply, caller_pid, :error}}
+
+  # A callback to show the current state when we’re in :players_set.
+  def players_set({:call, caller_pid}, :show_current_state, _state),
+    do: {:keep_state_and_data, {:reply, caller_pid, :players_set}}
+
   # API FUNCTIONS
   def show_current_state(fsm),
     do: :gen_statem.call(fsm, :show_current_state)
+
+  def add_player(fsm),
+    do: :gen_statem.call(fsm, :add_player)
 end
