@@ -1,7 +1,7 @@
 defmodule IslandsEngine.Game.Server do
   use GenServer
 
-  alias IslandsEngine.{Game, Player}
+  alias IslandsEngine.{Game, Player, Rules}
 
   def start_link(name)
   when is_binary(name) and byte_size(name) > 0,
@@ -10,8 +10,9 @@ defmodule IslandsEngine.Game.Server do
   def init(name) do
     {:ok, player1} = Player.Agent.start_link(name)
     {:ok, player2} = Player.Agent.start_link()
+    {:ok, rules}   = Rules.Agent.start_link()
 
-    {:ok, %Game{player1: player1, player2: player2}}
+    {:ok, %Game{player1: player1, player2: player2, rules: rules}}
   end
 
   def stop(pid),
