@@ -36,10 +36,10 @@ defmodule IslandsEngine.Game.Server do
   def handle_call(:state, _caller, game),
     do: {:reply, game, game}
 
-  def handle_call({:add_player, name}, _caller, game) do
-    Player.Agent.set_name(game.player2, name)
-
-    {:reply, :ok, game}
+  def handle_call({:add_player, name}, _caller, %{rules: rules} = game) do
+    rules
+    |> Rules.Agent.add_player()
+    |> maybe_add_player(game, name)
   end
 
   def handle_call({:set_island_coordinates, player, island, coordinates}, _caller, game) do
@@ -78,6 +78,15 @@ defmodule IslandsEngine.Game.Server do
     do: game.player2
   defp opponent(game, :player2),
     do: game.player1
+
+  defp maybe_add_player(:ok, %{player2: player2} = game, name) do
+    Player.Agent.set_name(player2, name)
+
+    {:reply, :ok, game}
+  end
+
+  defp maybe_add_player(reply, game, _name),
+    do: {:reply, reply, game}
 
   def handle_cast(:stop, game),
     do: {:stop, :normal, game}

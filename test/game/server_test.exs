@@ -20,7 +20,8 @@ defmodule IslandsEngine.Game.ServerTest do
   end
 
   test "should add a new Player", %{server: server} do
-    Server.add_player(server, :kamil)
+    assert :ok    = Server.add_player(server, :kamil)
+    assert :error = Server.add_player(server, :kamil)
 
     %{player1: player1, player2: player2} = Server.state(server)
 
