@@ -42,12 +42,10 @@ defmodule IslandsEngine.Game.Server do
     |> maybe_add_player(game, name)
   end
 
-  def handle_call({:set_island_coordinates, player, island, coordinates}, _caller, game) do
-    game
-    |> Map.get(player)
-    |> Player.Agent.set_island_coordinates(island, coordinates)
-
-    {:reply, :ok, game}
+  def handle_call({:set_island_coordinates, player, island, coordinates}, _caller, %{rules: rules} = game) do
+    rules
+    |> Rules.Agent.move_island(player)
+    |> maybe_set_island_coordinates(player, island, coordinates, game)
   end
 
   def handle_call({:guess, player, coordinate}, _caller, game) do
@@ -86,6 +84,17 @@ defmodule IslandsEngine.Game.Server do
   end
 
   defp maybe_add_player(reply, game, _name),
+    do: {:reply, reply, game}
+
+  defp maybe_set_island_coordinates(:ok, player, island, coordinates, game) do
+    game
+    |> Map.get(player)
+    |> Player.Agent.set_island_coordinates(island, coordinates)
+
+    {:reply, :ok, game}
+  end
+
+  defp maybe_set_island_coordinates(reply, _player, _island, _coordinates, game),
     do: {:reply, reply, game}
 
   def handle_cast(:stop, game),
