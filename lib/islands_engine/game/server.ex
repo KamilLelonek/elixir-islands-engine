@@ -33,6 +33,9 @@ defmodule IslandsEngine.Game.Server do
   when is_atom(player) and is_atom(coordinate),
     do: GenServer.call(server, {:guess, player, coordinate})
 
+  def set_islands(server, player),
+    do: GenServer.call(server, {:set_islands, player})
+
   def handle_call(:state, _caller, game),
     do: {:reply, game, game}
 
@@ -55,6 +58,12 @@ defmodule IslandsEngine.Game.Server do
     |> Player.Agent.guess_coordinate(coordinate)
     |> forest_check(opponent, coordinate)
     |> win_check(opponent, game)
+  end
+
+  def handle_call({:set_islands, player}, _caller, %{rules: rules} = game) do
+    reply = Rules.Agent.set_islands(rules, player)
+
+    {:reply, reply, game}
   end
 
   defp forest_check(:miss, _opponent, _coordinate),

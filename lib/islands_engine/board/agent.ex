@@ -15,7 +15,7 @@ defmodule IslandsEngine.Board.Agent do
   when is_atom(coordinate),
     do: get_coordinate(agent, coordinate)
 
-  defp extract_coordinate(agent, coordinate)
+  defp extract_coordinate(_agent, coordinate)
   when is_pid(coordinate),
     do: coordinate
 

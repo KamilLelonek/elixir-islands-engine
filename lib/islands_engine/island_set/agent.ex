@@ -7,7 +7,7 @@ defmodule IslandsEngine.IslandSet.Agent do
   def get_island(agent, key),
     do: Agent.get(agent, &Map.fetch!(&1, key))
 
-  defp island_set(agent),
+  def island_set(agent),
     do: Agent.get(agent, &(&1))
 
   def set_island_coordinates(agent, island_key, coordinates)

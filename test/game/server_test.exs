@@ -30,7 +30,8 @@ defmodule IslandsEngine.Game.ServerTest do
   end
 
   test "should set Island Coordinates", %{server: server} do
-    Server.set_island_coordinates(server, :player1, :dot, [:a1])
+    :ok = Server.add_player(server, :player2)
+    :ok = Server.set_island_coordinates(server, :player1, :dot, [:a1])
 
     %{player1: player1} = Server.state(server)
 
@@ -57,7 +58,8 @@ defmodule IslandsEngine.Game.ServerTest do
   end
 
   test "should hit an Island", %{server: server} do
-    Server.set_island_coordinates(server, :player2, :dot, [:a1])
+    :ok = Server.add_player(server, :player2)
+    :ok = Server.set_island_coordinates(server, :player2, :dot, [:a1])
 
     assert {:hit, :dot, true} = Server.guess_coordinate(server, :player1, :a1)
   end
@@ -66,5 +68,12 @@ defmodule IslandsEngine.Game.ServerTest do
     assert {:error, {:already_started, ^server}} = Server.start_link(@name)
     assert %{}                                   = Server.state({:global, "game:#{@name}"})
     assert :ok                                   = Server.stop({:global, "game:#{@name}"})
+  end
+
+  test "should set an Island", %{server: server} do
+    Server.add_player(server, :kamil)
+
+    assert :ok = Server.set_islands(server, :player1)
+    assert :ok = Server.set_islands(server, :player2)
   end
 end
