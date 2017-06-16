@@ -46,22 +46,32 @@ defmodule IslandsEngine.Game.ServerTest do
     |> Board.Agent.get_coordinate(:a1)
   end
 
-  test "should guess a Coordinate", %{server: server} do
-    assert {:miss, :none, :no_win} = Server.guess_coordinate(server, :player2, :a1)
+  test "should hit an Island", %{server: server} do
+    :ok = Server.add_player(server, :player2)
+    :ok = Server.set_island_coordinates(server, :player1, :dot, [:a1])
+    :ok = Server.set_island_coordinates(server, :player2, :dot, [:a1])
+    :ok = Server.set_islands(server, :player1)
+    :ok = Server.set_islands(server, :player2)
+
+    assert {:hit, :dot, :win} = Server.guess_coordinate(server, :player1, :a1)
 
     assert server
     |> Server.state()
-    |> Map.fetch!(:player1)
+    |> Map.fetch!(:player2)
     |> Player.Agent.get_board()
     |> Board.Agent.get_coordinate(:a1)
     |> Coordinate.Agent.guessed?()
   end
 
-  test "should hit an Island", %{server: server} do
+  test "should guess a Coordinate", %{server: server} do
     :ok = Server.add_player(server, :player2)
-    :ok = Server.set_island_coordinates(server, :player2, :dot, [:a1])
+    :ok = Server.set_island_coordinates(server, :player1, :dot,   [:a1])
+    :ok = Server.set_island_coordinates(server, :player2, :dot,   [:a1])
+    :ok = Server.set_island_coordinates(server, :player2, :atoll, [:c7])
+    :ok = Server.set_islands(server, :player1)
+    :ok = Server.set_islands(server, :player2)
 
-    assert {:hit, :dot, true} = Server.guess_coordinate(server, :player1, :a1)
+    assert {:hit, :atoll, :no_win} = Server.guess_coordinate(server, :player1, :c7)
   end
 
   test "should start and stop a Game", %{server: server} do

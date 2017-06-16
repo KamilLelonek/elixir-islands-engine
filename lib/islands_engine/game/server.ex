@@ -51,35 +51,44 @@ defmodule IslandsEngine.Game.Server do
     |> maybe_set_island_coordinates(player, island, coordinates, game)
   end
 
-  def handle_call({:guess, player, coordinate}, _caller, game) do
+  def handle_call({:guess, player, coordinate}, _caller, %{rules: rules} = game) do
     opponent = opponent(game, player)
 
-    opponent
-    |> Player.Agent.guess_coordinate(coordinate)
+    rules
+    |> Rules.Agent.guess_coordinate(player)
+    |> guess_reply(opponent, coordinate)
     |> forest_check(opponent, coordinate)
     |> win_check(opponent, game)
   end
 
-  def handle_call({:set_islands, player}, _caller, %{rules: rules} = game) do
-    reply = Rules.Agent.set_islands(rules, player)
+  def handle_call({:set_islands, player}, _caller, %{rules: rules} = game),
+    do: {:reply, Rules.Agent.set_islands(rules, player), game}
 
-    {:reply, reply, game}
-  end
+  defp guess_reply(:ok, opponent_board, coordinate),
+    do: Player.Agent.guess_coordinate(opponent_board, coordinate)
+  defp guess_reply(:error, _opponent_board, _coordinate),
+    do: :error
 
   defp forest_check(:miss, _opponent, _coordinate),
     do: {:miss, :none}
-
   defp forest_check(:hit, opponent, coordinate),
     do: {:hit, Player.Agent.forested_island(opponent, coordinate)}
+  defp forest_check(:error, _opponent, _coordinate),
+    do: :error
 
   defp win_check({hit_or_miss, :none}, _opponent, game),
     do: {:reply, {hit_or_miss, :none, :no_win}, game}
-
   defp win_check({:hit, island_key}, opponent, game),
     do: win_status(island_key, Player.Agent.win?(opponent), game)
+  defp win_check(:error, _opponent, game),
+    do: {:reply, :error, game}
 
-  defp win_status(island_key, win_status, game),
-    do: {:reply, {:hit, island_key, win_status}, game}
+  defp win_status(island_key, true, %{rules: rules} = game) do
+    Rules.Agent.win(rules)
+    {:reply, {:hit, island_key, :win}, game}
+  end
+  defp win_status(island_key, false, game),
+    do: {:reply, {:hit, island_key, :no_win}, game}
 
   defp opponent(game, :player1),
     do: game.player2
@@ -91,7 +100,6 @@ defmodule IslandsEngine.Game.Server do
 
     {:reply, :ok, game}
   end
-
   defp maybe_add_player(reply, game, _name),
     do: {:reply, reply, game}
 
@@ -102,7 +110,6 @@ defmodule IslandsEngine.Game.Server do
 
     {:reply, :ok, game}
   end
-
   defp maybe_set_island_coordinates(reply, _player, _island, _coordinates, game),
     do: {:reply, reply, game}
 

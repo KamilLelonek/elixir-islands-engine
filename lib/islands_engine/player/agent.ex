@@ -24,11 +24,11 @@ defmodule IslandsEngine.Player.Agent do
     IslandSet.Agent.set_island_coordinates(island_set, island_key, coordinates)
   end
 
-defp get_board_coordinates(agent, coordinates) do
-  agent
-  |> get_board()
-  |> Board.Agent.get_coordinates(coordinates)
-end
+  defp get_board_coordinates(agent, coordinates) do
+    agent
+    |> get_board()
+    |> Board.Agent.get_coordinates(coordinates)
+  end
 
   def guess_coordinate(agent, coordinate) do
     board = get_board(agent)
